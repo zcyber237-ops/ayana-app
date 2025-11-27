@@ -1,0 +1,16 @@
+{
+  "name": "AYANA",
+  "short_name": "AYANA",
+  "description": "AYANA IPTV — For the Liberation of Ngabantu",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#121212",
+  "theme_color": "#1e1e1e",
+  "icons": [
+    {
+      "src": "AYANA IPTV STREAMER APP LOGO.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    }
+  ]
+}
