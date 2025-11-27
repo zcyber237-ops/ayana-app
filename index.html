@@ -1,0 +1,1174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zino Streaming App - For Ngabantu</title>
+<style>
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; background: #121212; color: #e0e0e0; display: flex; flex-direction: column; min-height: 100vh; }
+h1, h2 { color: #ffffff; }
+.container { max-width: 1200px; margin: 20px auto; padding: 20px; background: #1e1e1e; border-radius: 8px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); }
+/* Engraved Default Playlist */
+.container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPgo8ZGVmcz4KPGxpbmVhckdyYWRpZW50IGlkPSJncmFkMSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIxMDAlIiB5Mj0iMTAwJSI+CjxzdG9wIG9mZnNldD0iMCUiIHN0b3AtY29sb3I9IiNmZmYiIHN0b3Atb3BhY2l0eT0iMC4xIiAvPgo8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiMwMDAiIHN0b3Atb3BhY2l0eT0iMC4xIiAvPgo8L2xpbmVhckdyYWRpZW50Pgo8L2RlZnM+CjxyZWN0IHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZDEpIiAvPgo8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZjBjMDA4IiBmaWxsLW9wYWNpdHk9IjAuMiIgLz4KPHBhdGggZmlsbD0iI2QwOTAwOCIgZD0iTTEwLDIwIEwzMCwyMCBMNDAsNDAgTDIwLDQwIFoiIC8+CjxwYXRoIGZpbGw9IiNiMDcwMDgiIGQ9Ik0yMCw0MCBMMzAsNDAgTDQwLDYwIEwyMCw2MCBaIiAvPgo8cGF0aCBmaWxsPSIjOTA1MDA4IiBkPSJNMzAsNDAgTDQwLDQwIEw1MCw2MCBMNDAsNjAgWiIgLz4KPHBhdGggZmlsbD0iIzgwMzAwOCIgZD0iTTEwLDYwIEwyMCw2MCBMMzAsODAgTDIwLDgwIFoiIC8+CjxwYXRoIGZpbGw9IiM2MDAwMDgiIGQ9Ik0yMCw2MCBMMzAsNjAgTDQwLDgwIEwyMCw4MCBaIiAvPgo8cGF0aCBmaWxsPSIjNDAwMDA4IiBkPSJNMzAsNjAgTDQwLDYwIEw1MCw4MCBMNDAsODAgWiIgLz4KPHBhdGggZmlsbD0iIzIwMDAwOCIgZD0iTTEwLDgwIEwyMCw4MCBMMzAsMTAwIEwyMCwxMDAgWiIgLz4KPHBhdGggZmlsbD0iIzAwMDAwOCIgZD0iTTEwLDIwIEwyMCwyMCBMMzAsNDAgTDIwLDQwIFoiIC8+CjxwYXRoIGZpbGw9IiMwMDAwMDgiIGQ9Ik0yMCw0MCBMMzAsNDAgTDQwLDYwIEwyMCw2MCBaIiAvPgo8cGF0aCBmaWxsPSIjMDAwMDA4IiBkPSJNMzAsNDAgTDQwLDQwIEw1MCw2MCBMNDAsNjAgWiIgLz4KPHBhdGggZmlsbD0iIzAwMDAwOCIgZD0iTTEwLDYwIEwyMCw2MCBMMzAsODAgTDIwLDgwIFoiIC8+CjxwYXRoIGZpbGw9IiMwMDAwMDgiIGQ9Ik0yMCw2MCBMMzAsNjAgTDQwLDgwIEwyMCw4MCBaIiAvPgo8cGF0aCBmaWxsPSIjMDAwMDA4IiBkPSJNMzAsNjAgTDQwLDYwIEw1MCw4MCBMNDAsODAgWiIgLz4KPC9zdmc+') no-repeat center center fixed;
+    background-size: cover;
+    z-index: -1;
+}
+#controls { margin-bottom: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
+#controls button, #controls select, #controls input[type="text"], .advanced-control {
+padding: 12px; font-size: 16px; min-width: 150px; border-radius: 6px; border: none; cursor: pointer;
+background-color: #333333; color: #ffffff; transition: background-color 0.2s, transform 0.1s;
+}
+#controls button:hover, #controls select:hover, #controls input[type="text"]:hover, .advanced-control:hover { background-color: #555555; transform: translateY(-1px); }
+#channels-container { display: flex; flex-direction: row; gap: 20px; }
+#categories { width: 200px; max-height: 60vh; overflow-y: auto; padding: 10px; border-radius: 6px; background: #2a2a2a; }
+.category-btn { width: 100%; padding: 10px; margin-bottom: 5px; text-align: left; background: linear-gradient(to right, #3a3a3a, #2a2a2a); border: none; color: #e0e0e0; border-radius: 4px; transition: background 0.2s, box-shadow 0.2s; box-shadow: 0 2px 4px rgba(0,0,0,0.2); }
+.category-btn:hover { background: linear-gradient(to right, #505050, #3a3a3a); box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+.category-btn.active { background: linear-gradient(to right, #007bff, #0056b3); color: #ffffff; box-shadow: 0 4px 8px rgba(0,0,0,0.3); }
+#channels { flex-grow: 1; max-height: 60vh; overflow-y: auto; border-radius: 6px; border: 1px solid #3a3a3a; padding: 10px; background: #2a2a2a; }
+.channel { padding: 12px; cursor: pointer; border-bottom: 1px solid #3a3a3a; transition: background 0.2s, transform 0.1s; display: flex; justify-content: space-between; align-items: center; }
+.channel:hover { background: #3a3a3a; transform: translateX(5px); }
+.channel.active { background: #007bff; color: #ffffff; }
+.favorite-btn { background: none; border: none; cursor: pointer; font-size: 1.2em; color: #f0f0f0; transition: color 0.2s; }
+.favorite-btn.is-favorite { color: #ffeb3b; }
+#player { width: 100%; height: auto; max-height: 70vh; margin-top: 20px; border-radius: 8px; background: #000; border: 2px solid #333; }
+#video-controls { margin-top: 20px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; }
+.control-group { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.control-group label { font-size: 0.9em; color: #b0b0b0; }
+#message { margin-top: 15px; color: #ff6b6b; text-align: center; font-weight: bold; }
+#pagination-controls { display: flex; justify-content: center; margin-top: 10px; gap: 10px; }
+#pagination-controls button { padding: 8px 16px; font-size: 14px; border: none; border-radius: 4px; background-color: #555; color: #fff; cursor: pointer; }
+#pagination-controls button:disabled { background-color: #333; cursor: not-allowed; }
+/* Modal Styles */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1000; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.7); 
+}
+.modal-content {
+    background-color: #1e1e1e;
+    margin: 10% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 90%; 
+    max-width: 700px; 
+    border-radius: 8px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    color: #e0e0e0;
+}
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close:hover,
+.close:focus {
+    color: white;
+    text-decoration: none;
+    cursor: pointer;
+}
+.modal-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    font-size: 0.9em;
+}
+.modal-content th, .modal-content td {
+    padding: 8px;
+    border: 1px solid #444;
+    text-align: left;
+}
+.modal-content th {
+    background-color: #333;
+}
+/* Tab Styles for Import Modal */
+.tab-container {
+    overflow: hidden;
+    border-bottom: 1px solid #444;
+    margin-bottom: 15px;
+}
+.tab-button {
+    background-color: #333;
+    color: white;
+    float: left;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 10px 15px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+.tab-button:hover {
+    background-color: #555;
+}
+.tab-button.active {
+    background-color: #1e1e1e;
+    border-bottom: 2px solid #007bff;
+}
+.tab-content {
+    display: none;
+    padding: 6px 0;
+    border-top: none;
+}
+.tab-content h4 {
+    margin-top: 0;
+    color: #007bff;
+}
+.playlist-link {
+    display: block;
+    padding: 8px;
+    margin-bottom: 5px;
+    background-color: #333;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+.playlist-link:hover {
+    background-color: #555;
+}
+/* Test Playlist Modal Specific Styles */
+#testPlaylistModal input[type="url"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #555;
+    background-color: #333;
+    color: #fff;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+#testPlaylistModal button {
+    padding: 10px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+#testPlaylistModal button:hover {
+    background-color: #0056b3;
+}
+@media (max-width: 768px) {
+.container { margin: 10px; padding: 10px; }
+#channels-container { flex-direction: column; }
+#categories { width: 100%; max-height: 20vh; }
+#channels { max-height: 40vh; }
+#controls, #video-controls { flex-direction: column; }
+#controls button, #controls select, #controls input[type="text"], .advanced-control { min-width: 100%; }
+.modal-content { margin: 5% auto; }
+}
+</style>
+<!-- Include hls.js -->
+<script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+</head>
+<body>
+<div class="container">
+<h1>Unified IPTV & TV Show Streamer</h1>
+<div id="iptv-section" aria-label="IPTV Player Section">
+<h2>IPTV Player</h2>
+<div id="controls" role="region" aria-label="Controls">
+<label for="playlistSwitcher">Select Playlist:</label>
+<select id="playlistSwitcher" aria-label="Playlist Switcher"></select>
+<button id="loadDefault" aria-pressed="false">Load Default Playlist</button>
+<button id="importPlaylistModalBtn" aria-label="Import Playlist"> 📂  Import Playlist</button> <!-- New button to open modal -->
+<button id="exportPlaylist" aria-label="Export Playlist">Export Playlist</button>
+<button id="loadSample" aria-label="Load Sample Playlist">Load Sample Playlist</button>
+<input type="text" id="searchChannels" placeholder="Search channels..." aria-label="Search channels"/>
+<span id="loading" style="display:none; color: #007bff;">Loading...</span>
+<button id="loadLocalBtn" aria-label="Load Local Media"> 🎵  Load Local Media</button>
+<button id="testPlaylistBtn" aria-label="Test New Playlists">🧪 Test New Playlists</button>
+</div>
+<div id="channels-container">
+<div id="categories" role="navigation" aria-label="Channel Categories">
+<!-- Categories will be injected here -->
+</div>
+<div id="channels" aria-label="Channel List"></div>
+</div>
+<div id="pagination-controls">
+<button id="prevPage" disabled>&laquo; Prev</button>
+<button id="nextPage" disabled>Next &raquo;</button>
+</div>
+<div id="epg"><strong>EPG Info:</strong> <span id="epgInfo">Select a channel to see schedule info.</span></div>
+<video id="player" controls aria-label="Video Player"></video>
+<div id="video-controls" role="region" aria-label="Video Controls">
+<div class="control-group">
+<label for="videoQualitySelect">Video Quality</label>
+<select id="videoQualitySelect" aria-label="Video Quality"></select>
+</div>
+<div class="control-group">
+<label for="audioQualitySelect">Audio Track</label>
+<select id="audioQualitySelect" aria-label="Audio Track"></select>
+</div>
+<div class="control-group">
+<label for="playbackSpeed">Speed</label>
+<select id="playbackSpeed" class="advanced-control" aria-label="Playback Speed">
+<option value="0.5">0.5x</option>
+<option value="1.0" selected>1.0x</option>
+<option value="1.5">1.5x</option>
+<option value="2.0">2.0x</option>
+</select>
+</div>
+<div class="control-group">
+<label for="volumeSlider">Volume</label>
+<input type="range" id="volumeSlider" class="advanced-control" min="0" max="1" step="0.1" value="1" aria-label="Volume Slider">
+</div>
+<button id="screenshotBtn" aria-label="Take Screenshot">📸 Screenshot</button>
+<button id="fullscreenBtn" aria-label="Fullscreen"> 🔳  Fullscreen</button>
+<button id="resetSettingsBtn" aria-label="Reset Settings"> 🔄  Reset Settings</button>
+</div>
+<!-- New buttons for Language/Country and Audio Types -->
+<div id="info-controls" style="margin-top: 15px; display: flex; justify-content: center; gap: 10px;">
+    <button id="languageCountryBtn" aria-label="Show Language and Country"> 🌐  Language/Country</button>
+    <button id="viewAudioTypesBtn" aria-label="View Audio Types Explanation"> 🔊  View Audio Types</button>
+    <button id="audioFormatSelectionBtn" aria-label="Select Audio Format"> 🎶  Audio Format Selection</button>
+</div>
+<div id="message"></div>
+</div>
+<!-- The Modal for Import Playlist -->
+<div id="importPlaylistModal" class="modal">
+    <div class="modal-content">
+        <span class="close" data-modal-id="importPlaylistModal">&times;</span>
+        <h3> 📂  Import New Playlist</h3>
+        <div class="tab-container">
+            <button class="tab-button active" onclick="openTab(event, 'localImportTab')">Local File / Custom URL</button>
+            <button class="tab-button" onclick="openTab(event, 'curatedPlaylistsTab')">Curated Playlists (iptv-org)</button>
+        </div>
+        <div id="localImportTab" class="tab-content" style="display: block;">
+            <h4>Import from Local File</h4>
+            <input type="file" id="importPlaylist" accept=".m3u,.json" aria-label="Import Playlist"/>
+            <p style="margin-top: 15px;">**OR**</p>
+            <h4>Import from Custom URL</h4>
+            <input type="url" id="customPlaylistUrl" placeholder="Paste M3U URL here..." style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #555; background-color: #333; color: #fff; border-radius: 4px; box-sizing: border-box;">
+            <button id="loadCustomUrlBtn" style="padding: 10px 15px; background-color: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Load Custom URL</button>
+        </div>
+        <div id="curatedPlaylistsTab" class="tab-content">
+            <h4>Master Playlists (All Channels)</h4>
+            <div class="playlist-link" data-url="https://iptv-org.github.io/iptv/index.m3u" data-name="IPTV-Org: All Channels">All Channels (Main)</div>
+            <div class="playlist-link" data-url="https://iptv-org.github.io/iptv/index.category.m3u" data-name="IPTV-Org: By Category">By Category</div>
+            <div class="playlist-link" data-url="https://iptv-org.github.io/iptv/index.language.m3u" data-name="IPTV-Org: By Language">By Language</div>
+            <div class="playlist-link" data-url="https://iptv-org.github.io/iptv/index.country.m3u" data-name="IPTV-Org: By Country">By Country</div>
+            <h4 style="margin-top: 20px;">Specific Category Playlists</h4>
+            <div class="playlist-link" data-url="https://iptv-org.github.io/iptv/categories/news.m3u" data-name="IPTV-Org: News">News</div>
+            <div class="playlist-link" data-url="https://iptv-org.github.io/iptv/categories/sports.m3u" data-name="IPTV-Org: Sports">Sports</div>
+            <div class="playlist-link" data-url="https://iptv-org.github.io/iptv/categories/movies.m3u" data-name="IPTV-Org: Movies">Movies</div>
+            <div class="playlist-link" data-url="https://iptv-org.github.io/iptv/categories/music.m3u" data-name="IPTV-Org: Music">Music</div>
+            <div class="playlist-link" data-url="https://iptv-org.github.io/iptv/categories/kids.m3u" data-name="IPTV-Org: Kids">Kids</div>
+            <div class="playlist-link" data-url="https://iptv-org.github.io/iptv/categories/documentary.m3u" data-name="IPTV-Org: Documentary">Documentary</div>
+        </div>
+    </div>
+</div>
+<!-- The Modal for Audio Types Explanation -->
+<div id="audioTypesModal" class="modal">
+    <div class="modal-content">
+        <span class="close" data-modal-id="audioTypesModal">&times;</span>
+        <h3>Understanding Audio Systems</h3>
+        <p>The core technical difference among these audio formats is how sound is encoded and delivered to your speakers, determining whether the sound is flat, around you, or truly three-dimensional.</p>
+        <h4> 🎧  Channel-Based Audio (Flat Layer)</h4>
+        <p>In these formats, the sound is mixed to play through a fixed number of speakers placed on a single horizontal plane (ear level).</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Format</th>
+                    <th>Channels</th>
+                    <th>Delivery Concept</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Stereo</td>
+                    <td>2 (Left & Right)</td>
+                    <td>Width Only. Sound is split between two fixed channels. Creates a left-to-right sense of width.</td>
+                </tr>
+                <tr>
+                    <td>Dolby Surround / DTS</td>
+                    <td>5.1 / 7.1 (Fixed)</td>
+                    <td>2D Horizontal. Sound is mixed into a fixed number of channels. Creates a sound field around you but without a height dimension.</td>
+                </tr>
+            </tbody>
+        </table>
+        <h4> 🚀  Object-Based Audio (Three-Dimensional)</h4>
+        <p>These newer formats add a vertical dimension (overhead speakers) and treat individual sounds as independent "objects" that can be placed anywhere in a 3D space, not just assigned to a fixed channel.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Format</th>
+                    <th>Channels / Objects</th>
+                    <th>Delivery Concept</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Dolby Atmos</td>
+                    <td>Up to 128 "Objects"</td>
+                    <td>3D Bubble (Height Focus). The sound is mapped in 3D space (X, Y, Z coordinates).</td>
+                </tr>
+                <tr>
+                    <td>DTS:X</td>
+                    <td>Up to 32 "Objects"</td>
+                    <td>Flexible 3D Bubble. Similar object-based mapping, more flexible with speaker placement.</td>
+                </tr>
+                <tr>
+                    <td>DTS-HD Master Audio</td>
+                    <td>Up to 7.1 (Fixed)</td>
+                    <td>High-Fidelity 2D. This is the lossless version of DTS.</td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 15px;">**Summary of the Most Important Difference:** The difference between older formats like DTS (5.1/7.1) and newer formats like Dolby Atmos and DTS:X is the move from **Channel-Based (2D)**, where sound only moves around you, to **Object-Based (3D)**, where sound can move around and over you.</p>
+    </div>
+</div>
+<!-- The Modal for Audio Format Selection -->
+<div id="audioFormatSelectionModal" class="modal">
+    <div class="modal-content">
+        <span class="close" data-modal-id="audioFormatSelectionModal">&times;</span>
+        <h3>Audio Format Selection</h3>
+        <p>Select your preferred audio format. Note that the availability and successful playback of these formats depend on the source stream and your device's capabilities.</p>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <button class="advanced-audio-btn" data-format="stereo">Stereo (Standard 2.0)</button>
+            <button class="advanced-audio-btn" data-format="dolby-surround">Dolby Surround / DTS (5.1 / 7.1)</button>
+            <button class="advanced-audio-btn" data-format="dolby-atmos">Dolby Atmos (3D Object-Based)</button>
+            <button class="advanced-audio-btn" data-format="dts-x">DTS:X (Flexible 3D Object-Based)</button>
+            <button class="advanced-audio-btn" data-format="dts-hd-ma">DTS-HD Master Audio (Lossless 2D)</button>
+        </div>
+        <p id="audio-selection-message" style="margin-top: 15px; color: #007bff; text-align: center;"></p>
+    </div>
+</div>
+<!-- The Modal for Test Playlists -->
+<div id="testPlaylistModal" class="modal">
+    <div class="modal-content">
+        <span class="close" data-modal-id="testPlaylistModal">&times;</span>
+        <h3>🧪 Test New Playlists (Temporary Categories)</h3>
+        <p>Enter the M3U URL for the playlist you want to test. Each playlist will be assigned a temporary category (Test-1, Test-2, etc.) and added to the Playlist Switcher.</p>
+        <p style="color: #ffeb3b; font-weight: bold;">Note: Only one URL can be tested at a time. Reload the app to clear test playlists.</p>
+        <label for="testPlaylistUrl">Playlist URL:</label>
+        <input type="url" id="testPlaylistUrl" placeholder="e.g., https://example.com/test.m3u" required>
+        <button id="loadTestPlaylistBtn">Load Test Playlist</button>
+        <p id="test-message" style="margin-top: 15px; color: #007bff; text-align: center;"></p>
+    </div>
+</div>
+</div>
+<script>
+const App = (() => {
+const defaultPlaylistUrl = "https://iptv-org.github.io/iptv/index.m3u";
+const FAVORITES_STORAGE_KEY = 'favoriteChannels';
+const TEST_PLAYLISTS_STORAGE_KEY = 'testPlaylists';
+const FAILED_CHANNELS_STORAGE_KEY = 'failedChannels';
+// State variables
+let channels = []; // Channels for the current view (filtered by category/search)
+let allChannels = []; // All channels loaded from the playlist
+let playlistMap = {}; // Map playlist name -> URL
+let currentPage = 0;
+const channelsPerPage = 10;
+let hls = null;
+let currentStreamType = null;
+let categories = {}; // { 'CategoryName': [channel1, channel2, ...], ... }
+let currentCategory = 'All Channels';
+let favoriteChannels = loadFavorites(); // Load favorites from local storage
+let currentChannelInfo = null; // To store info of the currently playing channel
+let currentAudioFormatSelection = 'stereo'; // New state for audio format preference
+let testPlaylists = loadTestPlaylists(); // Load test playlists from local storage
+let failedChannels = loadFailedChannels(); // Load failed channels from local storage
+// DOM references
+const dom = {
+channelsDiv: document.getElementById('channels'),
+categoriesDiv: document.getElementById('categories'),
+playlistSwitcher: document.getElementById('playlistSwitcher'),
+player: document.getElementById('player'),
+messageDiv: document.getElementById('message'),
+epgSpan: document.getElementById('epgInfo'),
+loadingSpan: document.getElementById('loading'),
+qualitySelect: document.getElementById('videoQualitySelect'),
+audioSelect: document.getElementById('audioQualitySelect'),
+screenshotBtn: document.getElementById('screenshotBtn'),
+fullscreenBtn: document.getElementById('fullscreenBtn'),
+resetBtn: document.getElementById('resetSettingsBtn'),
+searchInput: document.getElementById('searchChannels'),
+loadLocalBtn: document.getElementById('loadLocalBtn'),
+prevPageBtn: document.getElementById('prevPage'),
+nextPageBtn: document.getElementById('nextPage'),
+playbackSpeed: document.getElementById('playbackSpeed'),
+volumeSlider: document.getElementById('volumeSlider'),
+importPlaylistModalBtn: document.getElementById('importPlaylistModalBtn'), // New button
+importPlaylistModal: document.getElementById('importPlaylistModal'), // New modal
+importPlaylistInput: document.getElementById('importPlaylist'), // Local file input
+customPlaylistUrlInput: document.getElementById('customPlaylistUrl'), // Custom URL input
+loadCustomUrlBtn: document.getElementById('loadCustomUrlBtn'), // Load Custom URL button
+curatedPlaylistLinks: document.querySelectorAll('#curatedPlaylistsTab .playlist-link'), // Curated links
+languageCountryBtn: document.getElementById('languageCountryBtn'),
+viewAudioTypesBtn: document.getElementById('viewAudioTypesBtn'),
+audioTypesModal: document.getElementById('audioTypesModal'),
+audioFormatSelectionBtn: document.getElementById('audioFormatSelectionBtn'),
+audioFormatSelectionModal: document.getElementById('audioFormatSelectionModal'),
+audioSelectionMessage: document.getElementById('audio-selection-message'),
+closeButtons: document.querySelectorAll('.close'),
+advancedAudioButtons: document.querySelectorAll('.advanced-audio-btn'),
+testPlaylistBtn: document.getElementById('testPlaylistBtn'),
+testPlaylistModal: document.getElementById('testPlaylistModal'),
+testPlaylistUrlInput: document.getElementById('testPlaylistUrl'),
+loadTestPlaylistBtn: document.getElementById('loadTestPlaylistBtn'),
+testMessage: document.getElementById('test-message'),
+};
+// --- Local Storage Logic ---
+function loadFavorites() {
+try {
+return JSON.parse(localStorage.getItem(FAVORITES_STORAGE_KEY)) || {};
+} catch (e) {
+console.error("Error loading favorites:", e);
+return {};
+}
+}
+function saveFavorites() {
+localStorage.setItem(FAVORITES_STORAGE_KEY, JSON.stringify(favoriteChannels));
+}
+function loadTestPlaylists() {
+try {
+return JSON.parse(localStorage.getItem(TEST_PLAYLISTS_STORAGE_KEY)) || {};
+} catch (e) {
+console.error("Error loading test playlists:", e);
+return {};
+}
+}
+function saveTestPlaylists() {
+localStorage.setItem(TEST_PLAYLISTS_STORAGE_KEY, JSON.stringify(testPlaylists));
+}
+function loadFailedChannels() {
+try {
+return JSON.parse(localStorage.getItem(FAILED_CHANNELS_STORAGE_KEY)) || {};
+} catch (e) {
+console.error("Error loading failed channels:", e);
+return {};
+}
+}
+function saveFailedChannels() {
+localStorage.setItem(FAILED_CHANNELS_STORAGE_KEY, JSON.stringify(failedChannels));
+}
+function flagChannelAsFailed(channel) {
+const key = channel.name + '|' + channel.url;
+failedChannels[key] = true;
+saveFailedChannels();
+}
+// --- Favorites Logic ---
+function toggleFavorite(channel) {
+const key = channel.name + '|' + channel.url; // Unique key
+if (favoriteChannels[key]) {
+delete favoriteChannels[key];
+showMessage(`Removed ${channel.name} from Favorites.`);
+} else {
+favoriteChannels[key] = channel;
+showMessage(`Added ${channel.name} to Favorites.`);
+}
+saveFavorites();
+// Re-render if in Favorites category
+if (currentCategory === 'Favorites') {
+filterChannelsByCategory('Favorites');
+}
+// Re-render categories to update count
+setupCategories();
+}
+function isFavorite(channel) {
+const key = channel.name + '|' + channel.url;
+return !!favoriteChannels[key];
+}
+// --- Utility functions ---
+const showLoading = (show) => {
+dom.loadingSpan.style.display = show ? 'inline' : 'none';
+};
+const showMessage = (msg) => {
+dom.messageDiv.innerText = msg;
+};
+const clearMessage = () => {
+dom.messageDiv.innerText = '';
+};
+const savePreferences = () => {
+localStorage.setItem('playlist', dom.playlistSwitcher.value);
+localStorage.setItem('videoQuality', dom.qualitySelect.value);
+localStorage.setItem('audioQuality', dom.audioSelect.value);
+localStorage.setItem('playbackSpeed', dom.playbackSpeed.value);
+localStorage.setItem('volume', dom.volumeSlider.value);
+localStorage.setItem('audioFormatPreference', currentAudioFormatSelection);
+};
+const loadPreferences = () => {
+const playlist = localStorage.getItem('playlist');
+const vQuality = localStorage.getItem('videoQuality');
+const aQuality = localStorage.getItem('audioQuality');
+const speed = localStorage.getItem('playbackSpeed');
+const volume = localStorage.getItem('volume');
+const audioFormat = localStorage.getItem('audioFormatPreference');
+if (playlist && playlistMap[playlist]) {
+dom.playlistSwitcher.value = playlist;
+}
+if (vQuality) dom.qualitySelect.value = vQuality;
+if (aQuality) dom.audioSelect.value = aQuality;
+if (speed) dom.playbackSpeed.value = speed;
+if (volume) {
+dom.volumeSlider.value = volume;
+dom.player.volume = volume;
+}
+if (audioFormat) {
+currentAudioFormatSelection = audioFormat;
+}
+};
+// --- Core Playlist Logic ---
+async function loadPlaylist(url, playlistName = 'Default Playlist') {
+showLoading(true);
+clearMessage();
+channels = [];
+allChannels = [];
+categories = {};
+dom.channelsDiv.innerHTML = '';
+dom.categoriesDiv.innerHTML = '';
+dom.epgSpan.innerText = 'Select a channel to see schedule info.';
+if (hls) { hls.destroy(); hls = null; }
+try {
+const response = await fetch(url);
+if (!response.ok) throw new Error(`Network response was not ok (Status: ${response.status})`);
+const text = await response.text();
+parsePlaylist(text, playlistName);
+setupCategories();
+filterChannelsByCategory(currentCategory); // Initial display
+addToPlaylistSwitcher(playlistName, url);
+dom.playlistSwitcher.value = playlistName;
+} catch (e) {
+showMessage(`Failed to load playlist "${playlistName}": ${e.message}`);
+} finally {
+showLoading(false);
+}
+}
+function getCategoryFromChannelName(name) {
+name = name.toLowerCase();
+if (name.includes('movie') || name.includes('film')) return 'Movies';
+if (name.includes('cartoon') || name.includes('kids') || name.includes('child')) return 'Cartoons';
+if (name.includes('news') || name.includes('cnn') || name.includes('bbc news')) return 'News';
+if (name.includes('sport') || name.includes('espn') || name.includes('football') || name.includes('nba')) return 'Sports';
+if (name.includes('music') || name.includes('mtv') || name.includes('radio')) return 'Music';
+if (name.includes('english') || name.includes('usa') || name.includes('uk')) return 'English';
+if (name.includes('french') || name.includes('france')) return 'French';
+if (name.includes('spanish') || name.includes('espana')) return 'Spanish';
+if (name.includes('german') || name.includes('deutsch')) return 'German';
+return 'Other';
+}
+function parsePlaylist(text, playlistName) {
+const lines = text.split('\n');
+let currentChannel = {};
+let currentCategoryName = 'Other';
+for (let line of lines) {
+line = line.trim();
+if (line.startsWith('#EXTINF')) {
+const infoMatch = line.match(/#EXTINF:-1\s*(.*),\s*(.*)/);
+if (infoMatch) {
+const attributes = infoMatch[1];
+const name = infoMatch[2];
+const groupTitleMatch = attributes.match(/group-title="([^"]*)"/);
+const countryMatch = attributes.match(/tvg-country="([^"]*)"/);
+const languageMatch = attributes.match(/tvg-language="([^"]*)"/);
+currentCategoryName = groupTitleMatch ? groupTitleMatch[1] : getCategoryFromChannelName(name);
+currentChannel = {
+name: name,
+description: attributes,
+url: '',
+schedule: parseSchedule(attributes),
+category: currentCategoryName,
+country: countryMatch ? countryMatch[1] : 'N/A',
+language: languageMatch ? languageMatch[1] : 'N/A',
+playlist: playlistName // Tag channel with its source playlist
+};
+}
+} else if (line && !line.startsWith('#')) {
+currentChannel.url = line;
+const channelKey = currentChannel.name + '|' + currentChannel.url;
+// Filter out channels previously flagged as failed
+if (!failedChannels[channelKey]) {
+allChannels.push(currentChannel);
+// Group channels by category
+if (!categories[currentChannel.category]) {
+categories[currentChannel.category] = [];
+}
+categories[currentChannel.category].push(currentChannel);
+}
+currentChannel = {};
+}
+}
+}
+function setupCategories() {
+dom.categoriesDiv.innerHTML = '';
+// 1. Favorites Button
+const favCount = Object.keys(favoriteChannels).length;
+const favBtn = document.createElement('button');
+favBtn.className = 'category-btn' + (currentCategory === 'Favorites' ? ' active' : '');
+favBtn.innerText = ` ⭐  Favorites (${favCount})`;
+favBtn.onclick = () => filterChannelsByCategory('Favorites');
+dom.categoriesDiv.appendChild(favBtn);
+// 2. All Channels Button
+const allBtn = document.createElement('button');
+allBtn.className = 'category-btn' + (currentCategory === 'All Channels' ? ' active' : '');
+allBtn.innerText = 'All Channels';
+allBtn.onclick = () => filterChannelsByCategory('All Channels');
+dom.categoriesDiv.appendChild(allBtn);
+// 3. Dynamic Categories
+const sortedCategories = Object.keys(categories).sort();
+sortedCategories.forEach(cat => {
+const btn = document.createElement('button');
+btn.className = 'category-btn' + (currentCategory === cat ? ' active' : '');
+btn.innerText = `${cat} (${categories[cat].length})`;
+btn.onclick = () => filterChannelsByCategory(cat);
+dom.categoriesDiv.appendChild(btn);
+});
+}
+function filterChannelsByCategory(category) {
+currentCategory = category;
+currentPage = 0;
+dom.searchInput.value = ''; // Clear search when switching category
+// Update active category button
+document.querySelectorAll('.category-btn').forEach(btn => {
+btn.classList.remove('active');
+if (btn.innerText.includes(category) || (category === 'All Channels' && btn.innerText.includes('All Channels'))) {
+btn.classList.add('active');
+}
+});
+if (category === 'All Channels') {
+channels = [...allChannels];
+} else if (category === 'Favorites') {
+// Filter allChannels to only include favorites
+const favKeys = Object.keys(favoriteChannels);
+channels = allChannels.filter(channel => favKeys.includes(channel.name + '|' + channel.url));
+}
+else {
+channels = categories[category] || [];
+}
+displayChannels();
+}
+// Extract schedule info (e.g., time) from description
+function parseSchedule(desc) {
+const timeMatch = desc.match(/\b(\d{1,2}:\d{2})\b/); // Basic time extraction
+return timeMatch ? timeMatch[1] : 'N/A';
+}
+// Display channels with pagination
+function displayChannels() {
+const startIdx = currentPage * channelsPerPage;
+const pageChannels = channels.slice(startIdx, startIdx + channelsPerPage);
+dom.channelsDiv.innerHTML = '';
+pageChannels.forEach((channel) => {
+const div = document.createElement('div');
+div.className = 'channel';
+div.setAttribute('role', 'button');
+div.setAttribute('tabindex', '0');
+div.setAttribute('aria-selected', 'false');
+// Channel Name and Schedule
+const nameSpan = document.createElement('span');
+nameSpan.innerText = `${channel.name} (${channel.schedule})`;
+nameSpan.onclick = () => selectChannel(div, channel);
+nameSpan.style.flexGrow = '1';
+// Favorite Button
+const favBtn = document.createElement('button');
+favBtn.className = 'favorite-btn' + (isFavorite(channel) ? ' is-favorite' : '');
+favBtn.innerHTML = isFavorite(channel) ? ' ★ ' : ' ☆ '; // Filled star for favorite
+favBtn.title = isFavorite(channel) ? 'Remove from Favorites' : 'Add to Favorites';
+favBtn.onclick = (e) => {
+e.stopPropagation(); // Prevent channel click event
+toggleFavorite(channel);
+// Update button appearance immediately
+favBtn.className = 'favorite-btn' + (isFavorite(channel) ? ' is-favorite' : '');
+favBtn.innerHTML = isFavorite(channel) ? ' ★ ' : ' ☆ ';
+favBtn.title = isFavorite(channel) ? 'Remove from Favorites' : 'Add to Favorites';
+};
+div.appendChild(nameSpan);
+div.appendChild(favBtn);
+div.onkeydown = (e) => {
+if (e.key === 'Enter' || e.key === ' ') {
+e.preventDefault();
+selectChannel(div, channel);
+}
+};
+dom.channelsDiv.appendChild(div);
+});
+updatePaginationButtons();
+}
+// Update pagination button states
+function updatePaginationButtons() {
+dom.prevPageBtn.disabled = currentPage === 0;
+dom.nextPageBtn.disabled = (currentPage + 1) * channelsPerPage >= channels.length;
+}
+// Pagination events
+document.getElementById('prevPage').onclick = () => {
+if (currentPage > 0) {
+currentPage--;
+displayChannels();
+}
+};
+document.getElementById('nextPage').onclick = () => {
+if ((currentPage + 1) * channelsPerPage < channels.length) {
+currentPage++;
+displayChannels();
+}
+};
+// Select a channel
+function selectChannel(element, channel) {
+document.querySelectorAll('.channel').forEach(c => {
+c.setAttribute('aria-selected', 'false');
+c.classList.remove('active');
+});
+element.setAttribute('aria-selected', 'true');
+element.classList.add('active');
+currentChannelInfo = channel; // Store the current channel info
+if (channel.url) {
+loadStream(channel.url, channel.name);
+showMessage(`Playing: ${channel.name}`);
+updateEPG(channel);
+}
+}
+// Show EPG info
+function updateEPG(channel) {
+dom.epgSpan.innerText = `Name: ${channel.name}\nSchedule: ${channel.schedule}\nDescription: ${channel.description || 'N/A'}`;
+}
+// Add playlist option to switcher
+function addToPlaylistSwitcher(name, url) {
+// Clear existing options first if it's a fresh load
+if (name === 'Default Playlist') {
+dom.playlistSwitcher.innerHTML = '';
+playlistMap = {};
+}
+if (!playlistMap[name]) {
+playlistMap[name] = url;
+const option = document.createElement('option');
+option.value = name;
+option.innerText = name;
+dom.playlistSwitcher.appendChild(option);
+}
+}
+// Load sample playlist
+document.getElementById('loadSample').onclick = () =>
+loadPlaylist('https://raw.githubusercontent.com/iptv-org/iptv/master/streams/samples/playlist.m3u', 'Sample Playlist');
+// Load default playlist
+document.getElementById('loadDefault').onclick = () =>
+loadPlaylist(defaultPlaylistUrl, 'Default Playlist');
+// Switch playlist based on selection
+dom.playlistSwitcher.onchange = () => {
+const name = dom.playlistSwitcher.value;
+if (name && playlistMap[name]) loadPlaylist(playlistMap[name], name);
+};
+// Search filter
+dom.searchInput.oninput = () => {
+const q = dom.searchInput.value.toLowerCase();
+let sourceChannels;
+if (currentCategory === 'All Channels') {
+sourceChannels = allChannels;
+} else if (currentCategory === 'Favorites') {
+sourceChannels = Object.values(favoriteChannels);
+} else {
+sourceChannels = categories[currentCategory] || [];
+}
+const filtered = sourceChannels.filter(c => c.name.toLowerCase().includes(q));
+currentPage = 0; // Reset to first page
+channels = filtered;
+displayChannels();
+};
+// --- Import Playlist Modal Logic ---
+dom.importPlaylistModalBtn.onclick = () => {
+    dom.importPlaylistModal.style.display = "block";
+    // Ensure the default tab is active when opening
+    openTab(null, 'localImportTab');
+};
+// Local File Import
+dom.importPlaylistInput.onchange = (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const content = e.target.result;
+            const name = file.name.replace(/\.(m3u|json)$/i, '');
+            parsePlaylist(content, name);
+            setupCategories();
+            filterChannelsByCategory('All Channels');
+            addToPlaylistSwitcher(name, 'local'); // Use 'local' as a placeholder URL
+            dom.playlistSwitcher.value = name;
+            showMessage(`Playlist "${name}" imported successfully.`);
+            dom.importPlaylistModal.style.display = "none";
+        } catch (error) {
+            showMessage('Error processing imported file: ' + error.message);
+        }
+    };
+    reader.readAsText(file);
+};
+// Custom URL Import
+dom.loadCustomUrlBtn.onclick = () => {
+    const url = dom.customPlaylistUrlInput.value.trim();
+    if (!url) {
+        showMessage('Please enter a valid M3U URL.');
+        return;
+    }
+    const name = `Custom: ${new URL(url).hostname}`;
+    loadPlaylist(url, name).then(() => {
+        dom.importPlaylistModal.style.display = "none";
+    }).catch(e => {
+        showMessage(`Error loading custom URL: ${e.message}`);
+    });
+};
+// Curated Playlist Link Click
+dom.curatedPlaylistLinks.forEach(link => {
+    link.onclick = (e) => {
+        const url = e.target.getAttribute('data-url');
+        const name = e.target.getAttribute('data-name');
+        loadPlaylist(url, name).then(() => {
+            dom.importPlaylistModal.style.display = "none";
+        }).catch(e => {
+            showMessage(`Error loading curated playlist: ${e.message}`);
+        });
+    };
+});
+// Tab Switching Function
+window.openTab = (evt, tabName) => {
+    let i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tab-button");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    if (evt) {
+        evt.currentTarget.className += " active";
+    } else {
+        // Default to the first tab button if no event is passed (on modal open)
+        document.querySelector('.tab-button').className += " active";
+    }
+};
+// Export Playlist (Placeholder - requires server-side or complex client-side logic for a real M3U)
+document.getElementById('exportPlaylist').onclick = () => {
+showMessage('Export functionality is a placeholder. In a real app, this would generate and download an M3U file.');
+};
+// --- Streaming Logic with Error Handling ---
+function loadStream(url, name) {
+if (hls) { hls.destroy(); hls = null; }
+dom.player.src = '';
+currentStreamType = null;
+clearMessage();
+if (url.endsWith('.m3u8')) {
+if (Hls.isSupported()) {
+hls = new Hls();
+hls.loadSource(url);
+hls.attachMedia(dom.player);
+currentStreamType = 'hls';
+hls.on(Hls.Events.ERROR, (event, data) => {
+if (data.fatal) {
+const errorMsg = `HLS Fatal Error on ${name}: ${data.details}. Attempting to recover...`;
+showMessage(errorMsg);
+console.error(errorMsg, data);
+if (data.type === Hls.ErrorTypes.NETWORK_ERROR) {
+hls.startLoad();
+} else {
+hls.destroy();
+if (dom.player.canPlayType('application/vnd.apple.mpegurl')) {
+dom.player.src = url;
+currentStreamType = 'native';
+dom.player.play().catch(e => showMessage(`Native playback failed: ${e.message}`));
+} else {
+showMessage(`HLS playback failed and no native fallback is available for ${name}.`);
+}
+}
+} else if (data.details === Hls.ErrorDetails.FRAG_LOAD_ERROR || data.details === Hls.ErrorDetails.LEVEL_LOAD_ERROR) {
+showMessage(`Non-fatal HLS Error on ${name}: Stream segment failed to load.`);
+}
+});
+hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+// Populate quality options from HLS levels
+dom.qualitySelect.innerHTML = '';
+const levels = data.levels;
+// 1. Add Auto option (default)
+const autoOption = document.createElement('option');
+autoOption.value = -1; // -1 is the HLS.js value for auto
+autoOption.innerText = 'Auto (Best Quality)';
+dom.qualitySelect.appendChild(autoOption);
+// 2. Add explicit quality options
+levels.forEach((level, index) => {
+    const option = document.createElement('option');
+    option.value = index;
+    let resolutionText = `${level.height}p`;
+    if (level.height <= 480) resolutionText = 'SD 480p';
+    else if (level.height <= 720) resolutionText = 'HD 720p';
+    else if (level.height <= 1080) resolutionText = 'Full HD 1080p';
+    else if (level.height <= 1440) resolutionText = '2K 1440p';
+    else if (level.height >= 2160) resolutionText = '4K 2160p';
+    option.innerText = `${resolutionText} (${Math.round(level.bitrate / 1000)} kbps)`;
+    dom.qualitySelect.appendChild(option);
+});
+// Set quality/audio based on preferences or default
+const preferredVQuality = localStorage.getItem('videoQuality');
+if (preferredVQuality !== null) {
+    // If a preference is saved, try to select it
+    dom.qualitySelect.value = preferredVQuality;
+    hls.currentLevel = parseInt(preferredVQuality, 10);
+} else {
+    // Default to Auto (-1) for best quality
+    dom.qualitySelect.value = -1;
+    hls.currentLevel = -1;
+}
+// Populate audio track options
+dom.audioSelect.innerHTML = '';
+// Add advanced audio options (DTS, Dolby) as placeholders for user selection
+const advancedAudioOptions = [
+{ value: 'dts', label: ' 🎧  DTS' },
+{ value: 'dolbySurround', label: ' 🔊  Dolby Surround' },
+{ value: 'dolbyAtmos', label: ' 🎭  Dolby Atmos' },
+];
+if (data.audioTracks && data.audioTracks.length > 0) {
+data.audioTracks.forEach((track, index) => {
+const option = document.createElement('option');
+option.value = index;
+option.innerText = track.name || `Track ${index + 1}`;
+dom.audioSelect.appendChild(option);
+});
+} else {
+const defaultOption = document.createElement('option');
+defaultOption.value = 'default';
+defaultOption.innerText = 'Default Track';
+dom.audioSelect.appendChild(defaultOption);
+}
+// Append advanced audio options after the actual tracks
+advancedAudioOptions.forEach(opt => {
+const option = document.createElement('option');
+option.value = opt.value;
+option.innerText = opt.label;
+dom.audioSelect.appendChild(option);
+});
+const preferredAQuality = localStorage.getItem('audioQuality');
+if (preferredAQuality !== null) {
+    dom.audioSelect.value = preferredAQuality;
+    if (!isNaN(parseInt(preferredAQuality, 10))) {
+        hls.audioTrack = parseInt(preferredAQuality, 10);
+    }
+}
+});
+dom.qualitySelect.onchange = (e) => {
+    const level = parseInt(e.target.value, 10);
+    hls.currentLevel = level;
+    savePreferences();
+};
+dom.audioSelect.onchange = (e) => {
+const selectedValue = e.target.value;
+if (!isNaN(parseInt(selectedValue, 10))) {
+hls.audioTrack = parseInt(selectedValue, 10);
+}
+// Placeholder for advanced audio selection (DTS/Dolby)
+showMessage(`Audio setting changed to: ${selectedValue}`);
+savePreferences();
+};
+} else if (dom.player.canPlayType('application/vnd.apple.mpegurl')) {
+dom.player.src = url;
+currentStreamType = 'native';
+showMessage(`Playing ${name} using native HLS support.`);
+} else {
+showMessage('Your browser does not support HLS playback.');
+return;
+}
+} else {
+dom.player.src = url;
+currentStreamType = 'direct';
+showMessage(`Playing ${name} using direct source playback.`);
+}
+// Handle the play request and specific error
+dom.player.play().catch(e => {
+if (e.name !== 'AbortError' && e.message.indexOf('The play() request was interrupted') === -1) {
+showMessage('Error playing stream: ' + e.message);
+}
+if (e.message.includes('Failed to load because no supported source was found')) {
+console.warn(`Channel flagged for removal: ${name} (Error: No supported source)`);
+showMessage(`Error: Failed to load supported source for ${name}. This channel will be filtered out on next full playlist load.`);
+flagChannelAsFailed(currentChannelInfo); // Flag the channel for removal on next load
+}
+});
+}
+// --- Advanced Controls Logic ---
+// Playback Speed
+dom.playbackSpeed.onchange = () => {
+dom.player.playbackRate = parseFloat(dom.playbackSpeed.value);
+showMessage(`Playback Speed: ${dom.playbackSpeed.value}x`);
+savePreferences();
+};
+// Volume Slider
+dom.volumeSlider.oninput = () => {
+dom.player.volume = parseFloat(dom.volumeSlider.value);
+savePreferences();
+};
+// Screenshot
+dom.screenshotBtn.onclick = () => {
+const canvas = document.createElement('canvas');
+canvas.width = dom.player.videoWidth;
+canvas.height = dom.player.videoHeight;
+const ctx = canvas.getContext('2d');
+ctx.drawImage(dom.player, 0, 0, canvas.width, canvas.height);
+const dataUrl = canvas.toDataURL('image/png');
+const a = document.createElement('a');
+a.href = dataUrl;
+a.download = `${new Date().toISOString()}_screenshot.png`;
+a.click();
+showMessage('Screenshot captured!');
+};
+// Fullscreen toggle
+dom.fullscreenBtn.onclick = () => {
+if (document.fullscreenElement) {
+document.exitFullscreen();
+} else if (dom.player.requestFullscreen) {
+dom.player.requestFullscreen();
+} else if (dom.player.webkitRequestFullscreen) { /* Safari */
+dom.player.webkitRequestFullscreen();
+} else if (dom.player.msRequestFullscreen) { /* IE11 */
+dom.player.msRequestFullscreen();
+}
+};
+// Reset settings
+dom.resetBtn.onclick = () => {
+localStorage.clear();
+favoriteChannels = {}; // Reset favorites state
+testPlaylists = {}; // Reset test playlists
+failedChannels = {}; // Reset failed channels
+dom.qualitySelect.value = -1; // Default to Auto
+dom.audioSelect.value = 'default';
+dom.playbackSpeed.value = '1.0';
+dom.volumeSlider.value = '1';
+dom.player.volume = 1;
+dom.player.playbackRate = 1;
+showMessage('All settings reset and local storage cleared. Reloading default playlist...');
+// Reload the default playlist to clear in-memory state
+loadPlaylist(defaultPlaylistUrl, 'Default Playlist');
+};
+// Load local media file
+dom.loadLocalBtn.onclick = () => {
+const input = document.createElement('input');
+input.type = 'file';
+input.accept = '.mp4,.mkv,.mp3,.avi,.mov,.flac,.wav,.m3u8';
+input.onchange = () => {
+const file = input.files[0];
+if (file) {
+const url = URL.createObjectURL(file);
+loadStream(url, file.name);
+showMessage(`Playing local file: ${file.name}`);
+}
+};
+input.click();
+};
+// --- New Feature Logic ---
+// Language/Country Button
+dom.languageCountryBtn.onclick = () => {
+    if (currentChannelInfo) {
+        showMessage(`Language: ${currentChannelInfo.language || 'N/A'} | Country: ${currentChannelInfo.country || 'N/A'}`);
+    } else {
+        showMessage('Please select a channel first.');
+    }
+};
+// View Audio Types Button (Modal)
+dom.viewAudioTypesBtn.onclick = () => {
+    dom.audioTypesModal.style.display = "block";
+};
+// Audio Format Selection Button (Modal)
+dom.audioFormatSelectionBtn.onclick = () => {
+    dom.audioFormatSelectionModal.style.display = "block";
+    dom.audioSelectionMessage.innerText = `Current Preference: ${currentAudioFormatSelection.replace(/-/g, ' ').toUpperCase()}`;
+};
+// Advanced Audio Format Selection Logic
+dom.advancedAudioButtons.forEach(button => {
+    button.onclick = (e) => {
+        const format = e.target.getAttribute('data-format');
+        currentAudioFormatSelection = format;
+        savePreferences();
+        dom.audioSelectionMessage.innerText = `Preference Saved: ${format.replace(/-/g, ' ').toUpperCase()}. This will be used to prioritize audio tracks when available.`;
+    };
+});
+// Test Playlist Button (Modal)
+dom.testPlaylistBtn.onclick = () => {
+    dom.testPlaylistModal.style.display = "block";
+    dom.testMessage.innerText = '';
+};
+// Load Test Playlist Logic
+dom.loadTestPlaylistBtn.onclick = () => {
+    const url = dom.testPlaylistUrlInput.value.trim();
+    if (!url) {
+        dom.testMessage.innerText = 'Please enter a valid M3U URL.';
+        return;
+    }
+    // Determine the next test playlist number
+    const testPlaylistCount = Object.keys(testPlaylists).length;
+    const newPlaylistName = `Test-Playlist-${testPlaylistCount + 1}`;
+    // Save to local storage
+    testPlaylists[newPlaylistName] = url;
+    saveTestPlaylists();
+    // Load the playlist
+    loadPlaylist(url, newPlaylistName).then(() => {
+        dom.testPlaylistModal.style.display = "none";
+    }).catch(e => {
+        dom.testMessage.innerText = `Error loading playlist: ${e.message}`;
+    });
+};
+// Close Modal Logic
+dom.closeButtons.forEach(btn => {
+    btn.onclick = (e) => {
+        const modalId = e.target.getAttribute('data-modal-id');
+        if (modalId) {
+            document.getElementById(modalId).style.display = "none";
+        } else {
+            // Fallback for the first modal's close button
+            dom.audioTypesModal.style.display = "none";
+        }
+    };
+});
+// Close Modal when clicking outside
+window.onclick = (event) => {
+    if (event.target == dom.audioTypesModal) {
+        dom.audioTypesModal.style.display = "none";
+    }
+    if (event.target == dom.audioFormatSelectionModal) {
+        dom.audioFormatSelectionModal.style.display = "none";
+    }
+    if (event.target == dom.testPlaylistModal) {
+        dom.testPlaylistModal.style.display = "none";
+    }
+    if (event.target == dom.importPlaylistModal) {
+        dom.importPlaylistModal.style.display = "none";
+    }
+};
+// Initialization
+const init = () => {
+// Set initial player volume and speed
+dom.player.volume = parseFloat(dom.volumeSlider.value);
+dom.player.playbackRate = parseFloat(dom.playbackSpeed.value);
+// Load all playlists (default + test)
+const allPlaylists = { 'Default Playlist': defaultPlaylistUrl, ...testPlaylists };
+let firstPlaylistName = 'Default Playlist';
+// Clear switcher and load all known playlists
+dom.playlistSwitcher.innerHTML = '';
+playlistMap = {};
+for (const name in allPlaylists) {
+    addToPlaylistSwitcher(name, allPlaylists[name]);
+    if (name !== 'Default Playlist') firstPlaylistName = name; // Prioritize loading a test playlist if one exists
+}
+// Load the last selected or a default/test playlist
+const lastSelected = localStorage.getItem('playlist');
+const playlistToLoad = playlistMap[lastSelected] ? lastSelected : firstPlaylistName;
+loadPlaylist(playlistMap[playlistToLoad], playlistToLoad).then(() => {
+    // Load preferences after playlist is loaded and categories are set up
+    loadPreferences();
+});
+};
+// Expose public methods if needed
+return { init, loadPlaylist };
+})();
+window.onload = App.init;
+</script>
+</body>
+</html>
